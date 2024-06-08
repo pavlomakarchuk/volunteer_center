@@ -1,0 +1,12 @@
+Starting script
+Arguments: { C :76, D :84, E :27, F :12, G :11, H :12, I :20, J :10, K :12}
+1
+2
+3
+31
+4
+5
+6
+Result: {'prediction': 154}
+7
+8

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Додавання нового переселенця - Волонтерський центр</title>
+    <link rel="stylesheet" href="styles/styles.css">
+</head>
+<body>
+    <header>
+        <h1>Додавання нового переселенця</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">На початок</a></li>
+                <li><a href="worker_dashboard.html">Видача допомоги</a></li>
+                <li><a href="add_vpo.html">Додавання нового переселенця</a></li>
+                <li><a href="prediction.html">Скільки людей прийде наступного разу?</a></li>
+                <li><a href="news_form.html">Додати новину</a></li>
+                <li><a href="statistics.html">Статистика</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section>
+            <h2>Заповніть дані переселенця</h2>
+            <form id="add-vpo-form" action="backend/backend.php?action=add_vpo" method="post">
+                <label for="vpo_name">Прізвище, Ім'я, По-батькові:</label>
+                <input type="text" id="vpo_name" name="vpo_name" required>
+                
+                <label for="replacement_date">Дата прибуття в місто:</label>
+                <input type="date" id="replacement_date" name="replacement_date" required>
+                
+                <label for="dovidka">Номер довідки:</label>
+                <input type="text" id="dovidka" name="dovidka"  required>
+                
+                <label for="region">Область:</label>
+                <input type="text" id="region" name="region" required>
+                
+                <label for="city">Населений пункт:</label>
+                <input type="text" id="city" name="city" required>
+                
+                <label for="mobile">Мобільний телефон:</label>
+                <input type="tel" id="mobile" name="mobile" required>
+                
+                <label for="address">Адреса проживання:</label>
+                <input type="text" id="address" name="address" required>
+                
+                <button type="submit">Додати переселенця</button>
+            </form>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Церква «Надія»</p>
+    </footer>
+
+    <script>
+        document.getElementById('add-vpo-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const formData = new FormData(this);
+            fetch('backend/backend.php?action=add_vpo', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Переселенця успішно додано');
+                    this.reset();
+                } else {
+                    alert('Сталася помилка при додаванні переселенця: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Сталася помилка при додаванні переселенця. Спробуйте ще раз пізніше.');
+            });
+        });
+    </script>
+</body>
+</html>

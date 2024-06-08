@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Авторизація працівника - Волонтерський центр</title>
+    <link rel="stylesheet" href="styles/styles.css">
+</head>
+<body>
+    <header>
+        <h1>Авторизація працівника Волонтерського центру</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">На початок</a></li>
+            </ul>
+    </header>
+    <main>
+        <section id="login-section">
+            <h2>Вхід для працівників</h2>
+            <form id="login-form" action="http://localhost:8000/backend/backend.php?action=login" method="post">
+                <label for="login">Логін:</label>
+                <input type="text" id="login" name="login" required>
+                <label for="password">Пароль:</label>
+                <input type="password" id="password" name="password" required>
+                <button type="submit">Вхід</button>
+            </form>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2024 Церква «Надія»</p>
+    </footer>
+    <script>
+        document.getElementById('login-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const formData = new FormData(this);
+            fetch('http://localhost:8000/backend/backend.php?action=login', {
+                method: 'POST',
+                body: formData,
+                credentials: 'same-origin' // Додайте цей рядок
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok ' + response.statusText);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    window.location.href = 'worker_dashboard.html';
+                } else {
+                    alert('Помилка');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Сталася помилка. Спробуйте ще раз пізніше.');
+            });
+        });
+    </script>
+</body>
+</html>

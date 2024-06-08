@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Прогнозування кількості людей</title>
+    <link rel="stylesheet" href="styles/styles.css">
+</head>
+<body>
+    <header>
+        <h1>Прогнозування кількості людей</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">На початок</a></li>
+                <li><a href="worker_dashboard.html">Видача допомоги</a></li>
+                <li><a href="add_vpo.html">Додавання нового переселенця</a></li>
+                <li><a href="prediction.html">Скільки людей прийде наступного разу?</a></li>
+                <li><a href="news_form.html">Додати новину</a></li>
+                <li><a href="statistics.html">Статистика</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section id="result-section">
+            <h2>Результат прогнозування</h2>
+            <div id="result">
+                <!-- Результати з'являться тут -->
+                <button id="predict-btn">Отримати прогноз</button>
+                <div id="loading">Завантаження...</div>
+            </div>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2024 Церква «Надія»</p>
+    </footer>
+    <script>
+        document.getElementById('predict-btn').addEventListener('click', function() {
+            const resultDiv = document.getElementById('result');
+            const loadingDiv = document.getElementById('loading');
+
+            // Show loading indicator
+            loadingDiv.style.display = 'block';
+
+            fetch('backend/predict.php', {
+                method: 'POST'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const nearestThursday = new Date();
+                    nearestThursday.setDate(nearestThursday.getDate() + (4 - nearestThursday.getDay() + 7) % 7); // Get next Thursday
+                    const formatDate = date => date.toISOString().split('T')[0];
+
+                    let paramsHtml = '<h3>Параметри:</h3><ul>';
+                    for (const [param, value] of Object.entries(data.parameters)) {
+                        if (param === 'C') {
+                            paramsHtml += `<li>Призначено на найближчий четвер, ${formatDate(nearestThursday)}: ${value}</li>`;
+                        } else {
+                            const pastThursday = new Date(nearestThursday);
+                            pastThursday.setDate(nearestThursday.getDate() - (param.charCodeAt(0) - 'C'.charCodeAt(0)) * 7);
+                            paramsHtml += `<li>Не прийшли ${formatDate(pastThursday)}: ${value}</li>`;
+                        }
+                    }
+                    paramsHtml += '</ul>';
+                    resultDiv.innerHTML = `<p>Прогноз: ${data.prediction}</p>${paramsHtml}`;
+                } else {
+                    resultDiv.innerHTML = `<p>Помилка: ${data.message}</p>`;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                resultDiv.innerHTML = `<p>Сталася помилка: ${error.message}</p>`;
+            })
+            .finally(() => {
+                // Hide loading indicator
+                loadingDiv.style.display = 'none';
+            });
+        });
+    </script>
+</body>
+</html>

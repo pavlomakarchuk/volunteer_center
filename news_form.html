@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Додати новину - Волонтерський центр</title>
+    <link rel="stylesheet" href="styles/styles.css">
+</head>
+<body>
+    <header>
+        <h1>Додати новину</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">На початок</a></li>
+                <li><a href="worker_dashboard.html">Видача допомоги</a></li>
+                <li><a href="add_vpo.html">Додавання нового переселенця</a></li>
+                <li><a href="prediction.html">Скільки людей прийде наступного разу?</a></li>
+                <li><a href="news_form.html">Додати новину</a></li>
+                <li><a href="statistics.html">Статистика</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section>
+            <h2>Заповніть форму для додавання новини</h2>
+            <form id="add-news-form" action="backend/backend.php?action=add_news" method="post">
+                <label for="title">Заголовок новини:</label>
+                <input type="text" id="title" name="title" required>
+                
+                <label for="content">Текст новини:</label>
+                <textarea id="content" name="content" required></textarea>
+                
+                <button type="submit">Додати новину</button>
+            </form>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Церква «Надія»</p>
+    </footer>
+
+    <script>
+        document.getElementById('add-news-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const formData = new FormData(this);
+            fetch('backend/backend.php?action=add_news', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Новину успішно додано');
+                    this.reset();
+                } else {
+                    alert('Сталася помилка при додаванні новини: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Сталася помилка при додаванні новини. Спробуйте ще раз пізніше.');
+            });
+        });
+    </script>
+</body>
+</html>

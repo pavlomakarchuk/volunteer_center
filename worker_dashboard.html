@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Панель працівника - Волонтерський центр</title>
+    <link rel="stylesheet" href="styles/styles.css">
+</head>
+<body>
+    <header>
+        <h1>Панель працівника Волонтерського центру</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">На початок</a></li>
+                <li><a href="worker_dashboard.html">Видача допомоги</a></li>
+                <li><a href="add_vpo.html">Додавання нового переселенця</a></li>
+                <li><a href="prediction.html">Скільки людей прийде наступного разу?</a></li>
+                <li><a href="news_form.html">Додати новину</a></li>
+                <li><a href="statistics.html">Статистика</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section>
+            <h2>Пошук переселенця</h2>
+            <form id="search-form">
+                <label for="vpo_name">Ім'я:</label>
+                <input type="text" id="vpo_name" name="vpo_name">
+                <label for="dovidka">Номер довідки:</label>
+                <input type="text" id="dovidka" name="dovidka">
+                <button type="submit">Знайти</button>
+            </form>
+        </section>
+
+        <section id="vpo-info">
+            <!-- Інформація про переселенця буде вставлена тут -->
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Церква «Надія»</p>
+    </footer>
+
+    <script src="scripts/scripts.js"></script>
+    <script>
+        document.getElementById('search-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const formData = new FormData(this);
+            fetch('backend/backend.php?action=search_vpo', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                const vpoInfoSection = document.getElementById('vpo-info');
+                vpoInfoSection.innerHTML = '';
+
+                if (data.success) {
+                    const vpoInfo = document.createElement('div');
+                    vpoInfo.innerHTML = `
+                        <h3>Редагувати інформацію про переселенця</h3>
+                        <form id="edit-vpo-form">
+                            <label for="vpo_name">Прізвище, Ім'я, По-батькові:</label>
+                            <input type="text" id="vpo_name" name="vpo_name" value="${data.vpo.vpo_name}" required>
+
+                            <label for="replacement_date">Дата прибуття в місто:</label>
+                            <input type="date" id="replacement_date" name="replacement_date" value="${data.vpo.replacement_date}" required>
+
+                            <label for="dovidka">Номер довідки:</label>
+                            <input type="text" id="dovidka" name="dovidka" value="${data.vpo.dovidka}" required>
+
+                            <label for="region">Область:</label>
+                            <input type="text" id="region" name="region" value="${data.vpo.region}" required>
+
+                            <label for="city">Населений пункт:</label>
+                            <input type="text" id="city" name="city" value="${data.vpo.city}" required>
+
+                            <label for="mobile">Мобільний телефон:</label>
+                            <input type="tel" id="mobile" name="mobile" value="${data.vpo.mobile}" required>
+
+                            <label for="address">Адреса проживання:</label>
+                            <input type="text" id="address" name="address" value="${data.vpo.address}" required>
+
+                            <input type="hidden" name="vpo_id" value="${data.vpo.id}">
+
+                            <button type="submit">Зберегти зміни</button>
+                        </form>
+                    `;
+
+                    const assistanceForm = document.createElement('form');
+                    assistanceForm.id = "assistance-form";
+
+                    if (data.can_get_help) {
+                        assistanceForm.innerHTML = `
+                            <label for="next-date">Дата наступного візиту:</label>
+                            <input type="date" id="next-date" name="next_date" value="${data.next_date_default}">
+                            <input type="hidden" name="dovidka" value="${data.vpo.dovidka}">
+                            <button type="submit">Допомогу отримано</button>
+                        `;
+                    } else {
+                        assistanceForm.innerHTML = `<button type="button" disabled>Переселенець поки що не може отримати допомогу</button>`;
+                    }
+
+                    vpoInfoSection.appendChild(vpoInfo);
+                    vpoInfoSection.appendChild(assistanceForm);
+
+                    document.getElementById('edit-vpo-form').addEventListener('submit', function(event) {
+                        event.preventDefault();
+
+                        const formData = new FormData(this);
+                        fetch('backend/backend.php?action=update_vpo', {
+                            method: 'POST',
+                            body: formData
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                alert('VPO information updated successfully');
+                                // Update the form fields with the new data
+                                this.elements['vpo_name'].value = data.updatedVPO.vpo_name;
+                                this.elements['replacement_date'].value = data.updatedVPO.replacement_date;
+                                this.elements['dovidka'].value = data.updatedVPO.dovidka;
+                                this.elements['region'].value = data.updatedVPO.region;
+                                this.elements['city'].value = data.updatedVPO.city;
+                                this.elements['mobile'].value = data.updatedVPO.mobile;
+                                this.elements['address'].value = data.updatedVPO.address;
+                            } else {
+                                alert('Error updating VPO information: ' + data.message);
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            alert('An error occurred while updating VPO information. Please try again later.');
+                        });
+                    });
+
+                    document.getElementById('assistance-form').addEventListener('submit', function(event) {
+                        event.preventDefault();
+
+                        const formData = new FormData(this);
+                        fetch('backend/backend.php?action=record_assistance', {
+                            method: 'POST',
+                            body: formData
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                alert('Дані про видачу допомоги успішно збережені');
+                                location.reload();
+                            } else {
+                                alert('Сталася помилка при збереженні даних');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            alert('Сталася помилка при збереженні даних');
+                        });
+                    });
+                } else {
+                    vpoInfoSection.innerHTML = `<p>Переселенця не знайдено.</p>`;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Сталася помилка. Спробуйте ще раз пізніше.');
+            });
+        });
+    </script>
+</body>
+</html>

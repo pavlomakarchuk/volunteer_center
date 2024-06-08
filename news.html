@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Новини для переселенців - Волонтерський центр</title>
+    <link rel="stylesheet" href="styles/styles.css">
+</head>
+<body>
+    <header>
+        <h1>Новини волонтерського центру</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Головна</a></li>
+                <li><a href="when_can_i_come.html">Коли я можу прийти по допомогу?</a></li>
+                <li><a href="how_to_find_us.html">Як нас знайти?</a></li>
+                <li><a href="who_can_get_help.html">Хто може отримати допомогу в нас?</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section id="news">
+            <h2>Останні новини</h2>
+            <!-- Новини завантажуватимуться тут через AJAX -->
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Церква «Надія»</p>
+    </footer>
+
+    <script src="scripts/scripts.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            fetch('backend/backend.php?action=get_news')
+                .then(response => response.json())
+                .then(data => {
+                    const newsSection = document.getElementById('news');
+                    data.news.forEach(newsItem => {
+                        const newsArticle = document.createElement('article');
+                        const newsTitle = document.createElement('h3');
+                        const newsDate = document.createElement('p');
+                        const newsContent = document.createElement('p');
+
+                        newsTitle.textContent = newsItem.title;
+                        newsDate.textContent = `Дата: ${newsItem.date}`;
+                        newsContent.textContent = newsItem.content;
+
+                        newsArticle.appendChild(newsTitle);
+                        newsArticle.appendChild(newsDate);
+                        newsArticle.appendChild(newsContent);
+
+                        newsSection.appendChild(newsArticle);
+                    });
+                })
+                .catch(error => console.error('Error loading news:', error));
+        });
+    </script>
+</body>
+</html>

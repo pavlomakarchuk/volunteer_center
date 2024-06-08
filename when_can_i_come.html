@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Коли я можу прийти по допомогу? - Волонтерський центр</title>
+    <link rel="stylesheet" href="styles/styles.css">
+</head>
+<body>
+    <header>
+        <h1>Коли я можу прийти по допомогу?</h1>
+        <nav>
+            <ul>
+                <li><a href="news.html">Новини</a></li>
+                <li><a href="how_to_find_us.html">Як нас знайти?</a></li>
+                <li><a href="who_can_get_help.html">Хто може отримати допомогу в нас?</a></li>
+                <li><a href="index.html">Головна</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section>
+            <h2>Введіть номер довідки переселенця</h2>
+            <form id="check-date-form">
+                <label for="dovidka">Номер довідки:</label>
+                <input type="text" id="dovidka" name="dovidka" required>
+                <button type="submit">Перевірити</button>
+            </form>
+        </section>
+
+        <section id="next-date-info">
+            <!-- Інформація про наступну дату відвідування буде тут -->
+        </section>
+
+        <section>
+            <h2>Графік роботи</h2>
+            <p>Ми працюємо кожного четверга з 14:00 до 18:00.</p>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Церква «Надія»</p>
+    </footer>
+
+    <script src="scripts/scripts.js"></script>
+    <script>
+        document.getElementById('check-date-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const formData = new FormData(this);
+            fetch('backend/backend.php?action=check_next_date', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                const nextDateInfo = document.getElementById('next-date-info');
+                nextDateInfo.innerHTML = '';
+
+                if (data.success) {
+                    nextDateInfo.innerHTML = `
+                        <h3>Наступна дата відвідування</h3>
+                        <p>Коли ви можете прийти по допомогу: ${data.next_date}</p>
+                    `;
+                } else {
+                    nextDateInfo.innerHTML = `
+                        <p>Переселенця з такою довідкою не знайдено або він не може отримати допомогу найближчим часом.</p>
+                    `;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Сталася помилка. Спробуйте ще раз пізніше.');
+            });
+        });
+    </script>
+</body>
+</html>
