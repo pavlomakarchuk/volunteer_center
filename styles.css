@@ -1,0 +1,199 @@
+/* Підключення шрифту Gilroy */
+@font-face {
+    font-family: 'Gilroy';
+    src: url('fonts/Gilroy-Regular.woff2') format('woff2'),
+         url('fonts/Gilroy-Regular.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Gilroy';
+    src: url('fonts/Gilroy-Bold.woff2') format('woff2'),
+         url('fonts/Gilroy-Bold.woff') format('woff');
+    font-weight: bold;
+    font-style: normal;
+}
+
+/* Застосування шрифту Gilroy до всіх елементів */
+* {
+    font-family: 'Gilroy', Arial, sans-serif;
+}
+/* Center the ordered list */
+ol {
+    list-style-position: inside; /* Ensure list numbers are inside the content area */
+    padding: 0;
+    text-align: center; /* Center-align the text within the list items */
+    display: inline-block; /* Make the list an inline block to center it within its container */
+    margin: 0 auto; /* Center the list horizontally */
+}
+
+/* Additional styles for the list items */
+ol li {
+    text-align: center; /* Center-align the text within each list item */
+}
+
+
+/* Основні стилі */
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+    color: #333;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center content horizontally */
+    padding-bottom: 50px; /* Adjust this value if needed to match the footer's height */
+}
+
+/* Заголовок сторінки */
+header {
+    background-color: #4CAF50;
+    color: white;
+    padding: 15px 0;
+    text-align: center;
+    width: 100%; /* Ensure it stretches across the entire viewport */
+}
+
+header h1 {
+    margin: 0;
+}
+
+/* Навігаційне меню */
+nav ul {
+    list-style-type: none;
+    padding: 0;
+    background-color: #333;
+    overflow: hidden;
+    margin: 0;
+    text-align: center; /* Center text within navigation */
+    width: 100%; /* Ensure it stretches across the entire viewport */
+}
+
+nav ul li {
+    display: inline-block; /* Display list items inline for horizontal layout */
+}
+
+nav ul li a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+nav ul li a:hover {
+    background-color: #111;
+}
+
+/* Основний контент */
+main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    width: 100%;
+    box-sizing: border-box; /* Include padding in element's total width */
+    text-align: center; /* Center text within main content */
+}
+
+main h2 {
+    color: #4CAF50;
+}
+
+/* Формуляри */
+form {
+    background-color: #fff;
+    padding: 20px;
+    margin: 20px 0;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 500px; /* Limit the width for better readability */
+    text-align: left; /* Align text within form fields */
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center the form elements */
+}
+
+form label, form input, form textarea, form button {
+    width: 100%;
+    max-width: 400px; /* Limit the width for better readability */
+    margin-bottom: 10px;
+    box-sizing: border-box; /* Include padding and border in the element's total width */
+}
+
+form input, form textarea, form button {
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+}
+
+form button {
+    background-color: #4CAF50;
+    color: white;
+    cursor: pointer;
+    border: none;
+}
+
+form button:hover {
+    background-color: #45a049;
+}
+
+/* Картки новин */
+#news {
+    text-align: center; /* Center-align the text within the news container */
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center-align the articles within the news container */
+    width: 100%;
+}
+
+#news article {
+    background-color: #fff;
+    padding: 15px;
+    margin: 15px 0;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 600px; /* Limit the width for better readability */
+    text-align: left; /* Align text within news articles */
+    box-sizing: border-box; /* Include padding and border in the element's total width */
+}
+
+/* Футер сторінки */
+footer {
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 10px 0;
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+    left: 0;
+    z-index: 1000; /* Make sure it stays above other content */
+}
+ul {
+    list-style-type: none; /* Removes default bullet points */
+    padding: 0; /* Removes default padding */
+}
+
+ul li {
+    position: relative;
+    padding-left: 20px; /* Adds space for custom bullet */
+}
+
+#loading {
+    display: none; /* Hidden by default */
+    font-size: 16px;
+    font-weight: bold;
+    margin-top: 20px;
+}
+
+/* Адаптивне меню */
+@media (max-width: 600px) {
+    nav ul li {
+        display: block; /* Stack navigation items vertically on small screens */
+        text-align: center; /* Center-align text on small screens */
+    }
+}
